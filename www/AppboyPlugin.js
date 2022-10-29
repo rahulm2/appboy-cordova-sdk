@@ -382,6 +382,10 @@ AppboyPlugin.prototype.getContentCardsFromCache = function (successCallback, err
 	cordova.exec(successCallback, errorCallback, "AppboyPlugin", "getContentCardsFromCache");
 }
 
+AppboyPlugin.prototype.handleInAppMessageEvent = function (successCallback, errorCallback) {
+	cordova.exec(successCallback, errorCallback, "AppboyPlugin", "handleInAppMessageEvent");
+}
+
 /**
  * Launches a default Content Cards UI element.
  */

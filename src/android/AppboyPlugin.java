@@ -20,6 +20,7 @@ import com.braze.configuration.BrazeConfig;
 import com.braze.enums.BrazeSdkMetadata;
 import com.braze.events.ContentCardsUpdatedEvent;
 import com.braze.events.IEventSubscriber;
+import com.braze.events.InAppMessageEvent;
 import com.braze.models.outgoing.BrazeProperties;
 import com.braze.support.BrazeLogger;
 import com.braze.support.PermissionUtils;
@@ -28,6 +29,8 @@ import com.braze.ui.inappmessage.BrazeInAppMessageManager;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
+
 import org.apache.cordova.CordovaPreferences;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -154,6 +157,8 @@ public class AppboyPlugin extends CordovaPlugin {
       case "getDeviceId":
         callbackContext.success(Braze.getInstance(mApplicationContext).getDeviceId());
         return true;
+      case "handleInAppMessageEvent":
+        return handleInAppMessageEvent(action, callbackContext);
     }
 
     // User methods
@@ -435,7 +440,6 @@ public class AppboyPlugin extends CordovaPlugin {
       // Addresses Cordova bug in https://issuetracker.google.com/issues/36915710
       BrazeInAppMessageManager.getInstance().setCustomInAppMessageViewWrapperFactory(new CordovaInAppMessageViewWrapper.CordovaInAppMessageViewWrapperFactory());
     }
-
     Braze.configure(mApplicationContext, configBuilder.build());
   }
 
@@ -516,6 +520,11 @@ public class AppboyPlugin extends CordovaPlugin {
       }
     }
 
+    return true;
+  }
+
+  private boolean handleInAppMessageEvent(String action, final CallbackContext callbackContext) {
+    BrazeInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(new CustomInAppMessageManagerListener(this.cordova.getActivity(), callbackContext));
     return true;
   }
 
